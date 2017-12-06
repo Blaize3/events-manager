@@ -1,0 +1,23 @@
+language: node_js
+
+node_js:
+   - "stable"
+
+install:
+   - npm install
+
+services:
+   - postgresql
+
+env:
+  global:
+     - CC_TEST_REPORTER
+
+before_script:
+   - psql -c 'create database event_manager_test_db;' -U postgres
+
+script:
+   - npm run test
+
+after_success:
+   - npm run coverage
