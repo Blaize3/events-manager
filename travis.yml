@@ -11,7 +11,7 @@ services:
 
 env:
   global:
-     - CC_TEST_REPORTER
+     - CC_TEST_REPORTER_ID=0098f919ab459dca581b15df4e977115faafd5ed7c1b786e0b4d9f2dd30a7a50
 
 before_script:
    - psql -c 'create database event_manager_test_db;' -U postgres
