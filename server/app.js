@@ -3,6 +3,7 @@ import http from 'http';
 import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
+import router from './routes/index';
 
 // creating express application
 const app = express();
@@ -14,6 +15,9 @@ app.use(logger('dev'));
 // Parsing form data (request body inputs)
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// Routes handlers
+router(app);
 
 // default route handler
 app.get('*', (request, response) => {

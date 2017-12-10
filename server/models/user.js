@@ -100,8 +100,8 @@ module.exports = (sequelize, DataTypes) => {
 
   User.associate = (models) => {
     User.hasMany(models.Event, {
-      foreignKey: 'userId',
-      as: 'userId'
+      foreignKey: 'userId'
+      // as: 'userId'
     });
   };
   return User;

@@ -113,13 +113,13 @@ module.exports = (sequelize, DataTypes) => {
 
   Center.associate = (models) => {
     Center.hasMany(models.Event, {
-      foreignKey: 'centerId',
-      as: 'centerId'
+      foreignKey: 'centerId'
+      // as: 'centerId'
     });
 
     Center.hasOne(models.Facility, {
-      foreignKey: 'centerId',
-      as: 'centerId'
+      foreignKey: 'centerId'
+      // as: 'centerId'
     });
   };
   return Center;
