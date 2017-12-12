@@ -34,10 +34,7 @@ class DoAuthentication {
       .then(() => {
         request.decodedToken = decodedToken;
         next();
-      })
-      .catch(error => response.status(500).send({
-        'Authentication failed': error.errors[0].message
-      }));
+      });
   }
 }
 

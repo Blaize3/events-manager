@@ -129,6 +129,42 @@ class DoValidation {
 
     return validationStatus;
   }
+  /**
+ *
+ *
+ * @static
+ * @param {any} password
+ * @returns {DoValidation} The identifier for ...
+ * @memberof DoValidation
+ */
+  static validateNewPassword(password) {
+    let errorCount = 0;
+    const errorObject = {};
+    let validationHasFailed = false;
+
+    // /3. validate user's password field
+    if ((password === null) || (password === undefined) || (password === '')) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject.password = 'New password field cannot be empty.';
+    } else if (typeof (password) !== 'string') {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject.password = 'New password field must be of type string.';
+    } else if (password.length <= 8) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject.password = 'New password field length cannot be less than 8 characters.';
+    }
+
+    const validationStatus = {
+      validationHasFailed,
+      errorCount,
+      errorObject
+    };
+
+    return validationStatus;
+  }
 }
 
 export default DoValidation;
