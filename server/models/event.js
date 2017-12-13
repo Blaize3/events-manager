@@ -128,13 +128,13 @@ module.exports = (sequelize, DataTypes) => {
 
   Event.associate = (models) => {
     Event.belongsTo(models.User, {
-      foreignKey: 'userId',
-      as: 'userId'
+      foreignKey: 'userId'
+      // as: 'userId'
     });
 
     Event.belongsTo(models.Center, {
-      foreignKey: 'centerId',
-      as: 'centerId'
+      foreignKey: 'centerId'
+      // as: 'centerId'
     });
   };
   return Event;

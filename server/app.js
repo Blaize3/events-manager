@@ -3,6 +3,7 @@ import http from 'http';
 import express from 'express';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
+import router from './routes/index';
 
 // creating express application
 const app = express();
@@ -15,8 +16,29 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Routes handlers
+router(app);
+
 // default route handler
-app.get('*', (request, response) => {
+app.get('/*', (request, response) => {
+  response.status(404).send({
+    message: 'Page not found!'
+  });
+});
+
+app.post('/*', (request, response) => {
+  response.status(404).send({
+    message: 'Page not found!'
+  });
+});
+
+app.put('/*', (request, response) => {
+  response.status(404).send({
+    message: 'Page not found!'
+  });
+});
+
+app.delete('/*', (request, response) => {
   response.status(404).send({
     message: 'Page not found!'
   });

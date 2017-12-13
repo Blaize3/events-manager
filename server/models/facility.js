@@ -132,8 +132,8 @@ module.exports = (sequelize, DataTypes) => {
 
   Facility.associate = (models) => {
     Facility.belongsTo(models.Center, {
-      foreignKey: 'centerId',
-      as: 'centerId'
+      foreignKey: 'centerId'
+      // as: 'centerId'
     });
   };
   return Facility;
