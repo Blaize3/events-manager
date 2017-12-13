@@ -165,6 +165,43 @@ class DoValidation {
 
     return validationStatus;
   }
+
+  /**
+*
+*
+* @static
+* @param {any} email
+* @returns {DoValidation} The identifier for ...
+* @memberof DoValidation
+*/
+  static validateEmail(email) {
+    let errorCount = 0;
+    const errorObject = {};
+    let validationHasFailed = false;
+
+    // /1. validate user email field
+    if ((email === null) || (email === undefined) || (email === '')) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject.email = 'User email field cannot be empty.';
+    } else if (typeof (email) !== 'string') {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject.email = 'User email field must be of type string.';
+    } else if (!(RegularExpression.regExpEmail(email.toLowerCase().trim()))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject.email = 'Invalid email. use this snytax: you@domain.com';
+    }
+
+    const validationStatus = {
+      validationHasFailed,
+      errorCount,
+      errorObject
+    };
+
+    return validationStatus;
+  }
 }
 
 export default DoValidation;

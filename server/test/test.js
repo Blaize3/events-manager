@@ -20,6 +20,48 @@ describe('Events Manager API endpoint testing', () => {
           });
       });// ends it
     });// Get / describe
+
+    describe('Post /', () => {
+      it('should return "Page not found!"', (done) => {
+        request(app)
+          .post('/')
+          .expect(404)
+          .end((error, response) => {
+            expect(response.body).to.have.property('message');
+            expect(response.status).to.equal(404);
+            expect(response.body.message).to.equal('Page not found!');
+            done();
+          });
+      });// ends it
+    });// Post / describe
+
+    describe('Put /', () => {
+      it('should return "Page not found!"', (done) => {
+        request(app)
+          .put('/')
+          .expect(404)
+          .end((error, response) => {
+            expect(response.body).to.have.property('message');
+            expect(response.status).to.equal(404);
+            expect(response.body.message).to.equal('Page not found!');
+            done();
+          });
+      });// ends it
+    });// Put / describe
+
+    describe('Delete /', () => {
+      it('should return "Page not found!"', (done) => {
+        request(app)
+          .delete('/')
+          .expect(404)
+          .end((error, response) => {
+            expect(response.body).to.have.property('message');
+            expect(response.status).to.equal(404);
+            expect(response.body.message).to.equal('Page not found!');
+            done();
+          });
+      });// ends it
+    });// Delete / describe
   });// default test describe
 
   describe('Sign up API endpoint test', () => {
@@ -489,4 +531,99 @@ describe('Events Manager API endpoint testing', () => {
       });// Invalid Cases
     });// PUT /api/v1/users/password
   });// Change Password API endpoint test
+  describe('Create Admin User API endpoint test', () => {
+    describe('PUT /api/v1/users/admin', () => {
+      describe('Valid Case', () => {
+        it('should return "200 status and User 2 was successfully made an admin user." sending akugbeode@yahoo.com as the user\'s email', (done) => {
+          request(app)
+            .put('/api/v1/users/admin')
+            .set('x-access-token', adminToken)
+            .send({ email: 'akugbeode@yahoo.com' })
+            .expect(200)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Admin User Created');
+              expect(response.status).to.equal(200);
+              expect(response.body['Admin User Created']).to.equal('User 2 was successfully made an admin user.');
+              done();
+            });
+        });// ends it
+      });// Valid Case
+      describe('Invalid Case', () => {
+        it('should return "401 status and User 5 is not authorized to create privileged Users." using ordinary user', (done) => {
+          request(app)
+            .put('/api/v1/users/admin')
+            .set('x-access-token', userToken4)
+            .send({ email: 'akugbeode@yahoo.com' })
+            .expect(401)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.status).to.equal(401);
+              expect(response.body.message).to.equal('User 5 is not authorized to create privileged Users');
+              done();
+            });
+        });// ends it
+        it('should return "404 status and User accont not found." sending ode-igh@yahoo.com as the user\'s email', (done) => {
+          request(app)
+            .put('/api/v1/users/admin')
+            .set('x-access-token', adminToken)
+            .send({ email: 'ode-igh@yahoo.com' })
+            .expect(404)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.status).to.equal(404);
+              expect(response.body.message).to.equal('User accont not found.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 1 user input field failed to validate." sending empty email', (done) => {
+          request(app)
+            .put('/api/v1/users/admin')
+            .set('x-access-token', adminToken)
+            .send({})
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.body.Details).to.have.property('email');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('1 user input field failed to validate.');
+              expect(response.body.Details.email).to.equal('User email field cannot be empty.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 1 user input field failed to validate." sending number as email', (done) => {
+          request(app)
+            .put('/api/v1/users/admin')
+            .set('x-access-token', adminToken)
+            .send({ email: 1 })
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.body.Details).to.have.property('email');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('1 user input field failed to validate.');
+              expect(response.body.Details.email).to.equal('User email field must be of type string.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 1 user input field failed to validate." sending invalid email', (done) => {
+          request(app)
+            .put('/api/v1/users/admin')
+            .set('x-access-token', adminToken)
+            .send({ email: 'jayIshaya' })
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.body.Details).to.have.property('email');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('1 user input field failed to validate.');
+              expect(response.body.Details.email).to.equal('Invalid email. use this snytax: you@domain.com');
+              done();
+            });
+        });// ends it
+      });// Invalid Case
+    });// PUT /api/v1/users/admin
+  });// Create Admin User API endpoint test
 });// Main describe
