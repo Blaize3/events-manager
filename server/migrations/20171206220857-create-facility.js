@@ -6,15 +6,10 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
-    centerId: {
+    facilityName: {
       allowNull: false,
-      type: Sequelize.INTEGER,
-      onDelete: 'CASCADE',
-      reference: {
-        model: 'Center',
-        key: 'id',
-        as: 'centerId'
-      }
+      unique: true,
+      type: Sequelize.STRING
     },
     hasProjectors: {
       allowNull: false,
@@ -47,6 +42,10 @@ module.exports = {
     numOfToilets: {
       allowNull: false,
       type: Sequelize.INTEGER
+    },
+    descriptionFacility: {
+      allowNull: true,
+      type: Sequelize.TEXT
     },
     createdAt: {
       allowNull: false,
