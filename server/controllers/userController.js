@@ -281,51 +281,38 @@ class HandleUserRequest {
  * @memberof HandleUserRequest
  */
   static makeAdmin(request, response) {
-    const isValidUserInputs = DoValidation.validateEmail(request.body.email);
-    if (isValidUserInputs.validationHasFailed) {
-      return response.status(400).send({
-        message: `${isValidUserInputs.errorCount} user input ${(isValidUserInputs.errorCount === 1 ? 'field' : 'fields')} failed to validate.`,
-        Details: isValidUserInputs.errorObject
-      });
-    }
     return User
       .findOne({
         where: {
-          email: request.body.email.toLowerCase().trim()
+          email: request.decodedToken.email
         }
       })
       .then((userAccount) => {
-        if (!userAccount) {
-          return response.status(404).send({
-            message: 'User accont not found.'
-          });
-        }
-        const roleObject = {
-          role: 'admin user'
+        const resetPassword = {
+          password: hashedPassword
         };
 
         const updateObject = {
           ...userAccount.dataValues,
-          ...roleObject
+          ...resetPassword
         };
 
-        if (request.decodedToken.role === 'super user' || request.decodedToken.role === 'admin user') {
-          return User
-            .update(updateObject, {
-              where: {
-                email: request.body.email.toLowerCase().trim()
-              },
-              returning: true,
-              plain: true
-            })
-            .then(modifiedAccount => response.status(200).send({
-              'Admin User Created': `User ${modifiedAccount[1].id} was successfully made an admin user.`
-            }));
-        }
-        return response.status(401).send({
-          message: `User ${request.decodedToken.userID} is not authorized to create privileged Users`
-        });
-      });
+        return User
+          .update(updateObject, {
+            where: {
+              email: request.decodedToken.email
+            },
+            returning: true,
+            plain: true
+          })
+          .then(modifiedAccount => response.status(200).send({
+            'Password Change was Successful': `User ${modifiedAccount[1].id} has successfully changed his password.`,
+            'password strenght': (passwordStrength === 'Password is very Strong.' ? passwordStrength : `${passwordStrength} Update password to ensure better security.`)
+          }));
+      })
+      .catch(error => response.status(500).send({
+        'Change Password Account Verification Error': error.errors[0].message
+      }));
   }// ends makeAdmin
 }
 
