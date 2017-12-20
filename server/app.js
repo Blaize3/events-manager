@@ -26,6 +26,24 @@ app.get('*', (request, response) => {
   });
 });
 
+app.post('*', (request, response) => {
+  response.status(404).send({
+    message: 'Page not found!'
+  });
+});
+
+app.put('*', (request, response) => {
+  response.status(404).send({
+    message: 'Page not found!'
+  });
+});
+
+app.delete('*', (request, response) => {
+  response.status(404).send({
+    message: 'Page not found!'
+  });
+});
+
 // setting application port
 app.set('port', port);
 

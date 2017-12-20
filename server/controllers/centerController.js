@@ -35,7 +35,7 @@ class HandleCenterRequests {
       centerCategory: request.body.centerCategory,
       capacity: request.body.capacity,
       usageFee: request.body.usageFee,
-      createdBy: request.body.createdBy,
+      createdBy: '',
       description: request.body.description
     };
 
@@ -67,7 +67,7 @@ class HandleCenterRequests {
         centerCategory: addCenterObject.centerCategory.toLowerCase().trim(),
         capacity: parseInt(addCenterObject.capacity, 10),
         usageFee: parseFloat(addCenterObject.usageFee).toFixed(2),
-        createdBy: addCenterObject.createdBy.toLowerCase().trim(),
+        createdBy: `${request.decodedToken.lastname} ${request.decodedToken.firstname}`,
         description: addCenterObject.description.toLowerCase().trim()
       };
 
@@ -117,6 +117,7 @@ class HandleCenterRequests {
                   'Center address': createdCenter.address,
                   'Center location': createdCenter.location,
                   'Center category': createdCenter.centerCategory,
+                  'Center capacity': createdCenter.capacity,
                   'Usage fee': `N ${createdCenter.usageFee}`,
                   'Created by': createdCenter.createdBy,
                   Description: createdCenter.description
@@ -145,7 +146,7 @@ class HandleCenterRequests {
         centerCategory: addCenterObject.centerCategory.toLowerCase().trim(),
         capacity: parseInt(addCenterObject.capacity, 10),
         usageFee: parseFloat(addCenterObject.usageFee).toFixed(2),
-        createdBy: addCenterObject.createdBy.toLowerCase().trim(),
+        createdBy: `${request.decodedToken.lastname} ${request.decodedToken.firstname}`,
         description: addCenterObject.description.toLowerCase().trim()
       };
 
@@ -216,6 +217,7 @@ class HandleCenterRequests {
             'Center address': createdCenter.address,
             'Center location': createdCenter.location,
             'Center category': createdCenter.centerCategory,
+            'Center capacity': createdCenter.capacity,
             'Usage fee': `N ${createdCenter.usageFee}`,
             'Created by': createdCenter.createdBy,
             Description: createdCenter.description

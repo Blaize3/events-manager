@@ -281,38 +281,67 @@ class HandleUserRequest {
  * @memberof HandleUserRequest
  */
   static makeAdmin(request, response) {
-    return User
-      .findOne({
-        where: {
-          email: request.decodedToken.email
-        }
-      })
-      .then((userAccount) => {
-        const resetPassword = {
-          password: hashedPassword
-        };
+    let updateUserObject;
+    try {
+      updateUserObject = {
+        email: request.body.email
+      };
+    } catch (error) {
+      updateUserObject = {
+        email: undefined
+      };
+    }
 
-        const updateObject = {
-          ...userAccount.dataValues,
-          ...resetPassword
-        };
+    const isValidUserInputs = DoValidation.validateEmail(updateUserObject.email);
+    if (isValidUserInputs.validationHasFailed) {
+      return response.status(400).send({
+        message: `${isValidUserInputs.errorCount} user input ${(isValidUserInputs.errorCount === 1 ? 'field' : 'fields')} failed to validate.`,
+        Details: isValidUserInputs.errorObject
+      });
+    }
+    if (request.decodedToken.role !== 'ordinary user') {
+      return User
+        .findOne({
+          where: {
+            email: updateUserObject.email
+          }
+        })
+        .then((userAccount) => {
+          if (!userAccount) {
+            return response.status(404).send({
+              message: 'User account not found.'
+            });
+          }
+          const resetRole = {
+            role: 'admin user'
+          };
 
-        return User
-          .update(updateObject, {
-            where: {
-              email: request.decodedToken.email
-            },
-            returning: true,
-            plain: true
-          })
-          .then(modifiedAccount => response.status(200).send({
-            'Password Change was Successful': `User ${modifiedAccount[1].id} has successfully changed his password.`,
-            'password strenght': (passwordStrength === 'Password is very Strong.' ? passwordStrength : `${passwordStrength} Update password to ensure better security.`)
-          }));
-      })
-      .catch(error => response.status(500).send({
-        'Change Password Account Verification Error': error.errors[0].message
-      }));
+          const updateObject = {
+            ...userAccount.dataValues,
+            ...resetRole
+          };
+
+          return User
+            .update(updateObject, {
+              where: {
+                email: updateUserObject.email
+              },
+              returning: true,
+              plain: true
+            })
+            .then(modifiedAccount => response.status(200).send({
+              'Admin User Created': `User ${modifiedAccount[1].id} was successfully made an admin user.`
+            }));
+        })
+        .catch(error => response.status(500).send({
+          'Change Password Account Verification Error': error.errors[0].message
+        }));
+    }
+    if (request.decodedToken.role === 'ordinary user') {
+      return response.status(401).send({
+        message: `User ${request.decodedToken.userID} is not authorized to create privileged Users`
+      });
+    }
   }// ends makeAdmin
 }
 

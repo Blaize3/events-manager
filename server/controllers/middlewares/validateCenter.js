@@ -73,6 +73,10 @@ class DoValidation {
     }
 
     // /2. validate facility has projector field
+    object.hasProjectors = (object.hasProjectors === undefined ? '' : object.hasProjectors);
+    if (object.hasProjectors === null || typeof (object.hasProjectors) !== 'string') {
+      object.hasProjectors = '';
+    }
     if ((object.hasProjectors === null) || (object.hasProjectors === undefined) || (object.hasProjectors === '')) {
       validationHasFailed = true;
       errorCount += 1;
@@ -106,6 +110,10 @@ class DoValidation {
     }
 
     // /4. validate facility has chairs field
+    object.hasChairs = (object.hasChairs === undefined ? '' : object.hasChairs);
+    if (object.hasChairs === null || typeof (object.hasChairs) !== 'string') {
+      object.hasChairs = '';
+    }
     if ((object.hasChairs === null) || (object.hasChairs === undefined) || (object.hasChairs === '')) {
       validationHasFailed = true;
       errorCount += 1;
@@ -139,6 +147,10 @@ class DoValidation {
     }
 
     // /6. validate facility has tables field
+    object.hasTables = (object.hasTables === undefined ? '' : object.hasTables);
+    if (object.hasTables === null || typeof (object.hasTables) !== 'string') {
+      object.hasTables = '';
+    }
     if ((object.hasTables === null) || (object.hasTables === undefined) || (object.hasTables === '')) {
       validationHasFailed = true;
       errorCount += 1;
@@ -172,6 +184,10 @@ class DoValidation {
     }
 
     // /8. validate facility has toilets field
+    object.hasToilets = (object.hasToilets === undefined ? '' : object.hasToilets);
+    if (object.hasToilets === null || typeof (object.hasToilets) !== 'string') {
+      object.hasToilets = '';
+    }
     if ((object.hasToilets === null) || (object.hasToilets === undefined) || (object.hasToilets === '')) {
       validationHasFailed = true;
       errorCount += 1;
@@ -331,27 +347,7 @@ class DoValidation {
       errorObject['Center usage fee'] = 'Center usage fee field cannot be 0.00';
     }
 
-    // /17. validate Center Created By field
-    if ((object.createdBy === null) || (object.createdBy === undefined) || (object.createdBy === '')) {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field cannot be empty.';
-    } else if (typeof (object.createdBy) !== 'string') {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field must be of type string.';
-    } else if (!(RegularExpression
-      .regExpCharactersAndSpace(object.createdBy.toLowerCase().trim()))) {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field can take alphabets and white space.';
-    } else if (object.createdBy.length <= 2) {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field length cannot be less than 3 characters.';
-    }
-
-    // /18. valid Center description field
+    // /17. valid Center description field
     if ((object.description === null) || (object.description === undefined) || (object.description === '')) {
       object.description = '';
     } else if (typeof (object.description) !== 'string') {
@@ -515,27 +511,7 @@ class DoValidation {
       errorObject['Center usage fee'] = 'Center usage fee field cannot be 0.00';
     }
 
-    // /8. validate Center Created By field
-    if ((object.createdBy === null) || (object.createdBy === undefined) || (object.createdBy === '')) {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field cannot be empty.';
-    } else if (typeof (object.createdBy) !== 'string') {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field must be of type string.';
-    } else if (!(RegularExpression
-      .regExpCharactersAndSpace(object.createdBy.toLowerCase().trim()))) {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field can take alphabets and white space.';
-    } else if (object.createdBy.length <= 2) {
-      validationHasFailed = true;
-      errorCount += 1;
-      errorObject['Center created by'] = 'Center created by field length cannot be less than 3 characters.';
-    }
-
-    // /9. valid Center description field
+    // /8. valid Center description field
     if ((object.description === null) || (object.description === undefined) || (object.description === '')) {
       object.description = '';
     } else if (typeof (object.description) !== 'string') {

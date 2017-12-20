@@ -560,9 +560,10 @@ describe('Events Manager API endpoint testing', () => {
               expect(response.status).to.equal(401);
               expect(response.body.message).to.equal('User 5 is not authorized to create privileged Users');
               done();
+              if (error) done(error);
             });
         });// ends it
-        it('should return "404 status and User accont not found." sending ode-igh@yahoo.com as the user\'s email', (done) => {
+        it('should return "404 status and User account not found." sending ode-igh@yahoo.com as the user\'s email', (done) => {
           request(app)
             .put('/api/v1/users/admin')
             .set('x-access-token', adminToken)
@@ -571,7 +572,7 @@ describe('Events Manager API endpoint testing', () => {
             .end((error, response) => {
               expect(response.body).to.have.property('message');
               expect(response.status).to.equal(404);
-              expect(response.body.message).to.equal('User accont not found.');
+              expect(response.body.message).to.equal('User account not found.');
               done();
             });
         });// ends it
@@ -760,7 +761,7 @@ describe('Events Manager API endpoint testing', () => {
               done();
             });
         });// ends it
-        it('should return "400 status and 12 user input fields failed to validate." setting isFacilityExisting field to false.', (done) => {
+        it('should return "400 status and 11 user input fields failed to validate." setting isFacilityExisting field to false.', (done) => {
           const centerObject = {
             isFacilityExisting: 'false',
           };
@@ -773,11 +774,11 @@ describe('Events Manager API endpoint testing', () => {
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
-              expect(response.body.message).to.equal('12 user input fields failed to validate.');
+              expect(response.body.message).to.equal('11 user input fields failed to validate.');
               done();
             });
         });// ends it
-        it('should return "400 status and 8 user input fields failed to validate." setting isFacilityExisting field to true.', (done) => {
+        it('should return "400 status and 7 user input fields failed to validate." setting isFacilityExisting field to true.', (done) => {
           const centerObject = {
             isFacilityExisting: 'true',
           };
@@ -787,6 +788,80 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('7 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 13 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 2,
+            hasProjectors: 2,
+            numOfProjectors: '5dd',
+            hasChairs: 2,
+            numOfChairs: 'jj',
+            hasTables: 2,
+            numOfTables: 'kk',
+            hasToilets: 3,
+            numOfToilets: 'll',
+            descriptionFacility: 2,
+            facilityId: 'hg',
+            centerName: 4,
+            address: 4,
+            location: 7,
+            centerCategory: 98,
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: 4,
+            description: 8
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              console.log('===========> 1', response.body);
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('13 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 8 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 2,
+            hasProjectors: 2,
+            numOfProjectors: '5dd',
+            hasChairs: 2,
+            numOfChairs: 'jj',
+            hasTables: 2,
+            numOfTables: 'kk',
+            hasToilets: 3,
+            numOfToilets: 'll',
+            descriptionFacility: 2,
+            facilityId: 'hg',
+            centerName: 4,
+            address: 4,
+            location: 7,
+            centerCategory: 98,
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: 4,
+            description: 8
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              console.log('===========> 2', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
@@ -794,79 +869,7 @@ describe('Events Manager API endpoint testing', () => {
               done();
             });
         });// ends it
-        it('should return "400 status and 14 user input fields failed to validate."', (done) => {
-          const centerObject = {
-            isFacilityExisting: 'false',
-            facilityName: 2,
-            hasProjectors: 2,
-            numOfProjectors: '5dd',
-            hasChairs: 2,
-            numOfChairs: 'jj',
-            hasTables: 2,
-            numOfTables: 'kk',
-            hasToilets: 3,
-            numOfToilets: 'll',
-            descriptionFacility: 2,
-            facilityId: 'hg',
-            centerName: 4,
-            address: 4,
-            location: 7,
-            centerCategory: 98,
-            capacity: 'kjkhj',
-            usageFee: 'hghhh',
-            createdBy: 4,
-            description: 8
-          };
-          request(app)
-            .post('/api/v1/centers')
-            .set('x-access-token', adminToken)
-            .send(centerObject)
-            .expect(400)
-            .end((error, response) => {
-              expect(response.body).to.have.property('message');
-              expect(response.body).to.have.property('Details');
-              expect(response.status).to.equal(400);
-              expect(response.body.message).to.equal('14 user input fields failed to validate.');
-              done();
-            });
-        });// ends it
-        it('should return "400 status and 9 user input fields failed to validate."', (done) => {
-          const centerObject = {
-            isFacilityExisting: 'true',
-            facilityName: 2,
-            hasProjectors: 2,
-            numOfProjectors: '5dd',
-            hasChairs: 2,
-            numOfChairs: 'jj',
-            hasTables: 2,
-            numOfTables: 'kk',
-            hasToilets: 3,
-            numOfToilets: 'll',
-            descriptionFacility: 2,
-            facilityId: 'hg',
-            centerName: 4,
-            address: 4,
-            location: 7,
-            centerCategory: 98,
-            capacity: 'kjkhj',
-            usageFee: 'hghhh',
-            createdBy: 4,
-            description: 8
-          };
-          request(app)
-            .post('/api/v1/centers')
-            .set('x-access-token', adminToken)
-            .send(centerObject)
-            .expect(400)
-            .end((error, response) => {
-              expect(response.body).to.have.property('message');
-              expect(response.body).to.have.property('Details');
-              expect(response.status).to.equal(400);
-              expect(response.body.message).to.equal('9 user input fields failed to validate.');
-              done();
-            });
-        });// ends it
-        it('should return "400 status and 14 user input fields failed to validate."', (done) => {
+        it('should return "400 status and 13 user input fields failed to validate."', (done) => {
           const centerObject = {
             isFacilityExisting: 'false',
             facilityName: '@;',
@@ -895,14 +898,15 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              console.log('===========> 3', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
-              expect(response.body.message).to.equal('14 user input fields failed to validate.');
+              expect(response.body.message).to.equal('13 user input fields failed to validate.');
               done();
             });
         });// ends it
-        it('should return "400 status and 9 user input fields failed to validate."', (done) => {
+        it('should return "400 status and 8 user input fields failed to validate."', (done) => {
           const centerObject = {
             isFacilityExisting: 'true',
             facilityName: '@;',
@@ -931,14 +935,15 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              console.log('===========> 4', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
-              expect(response.body.message).to.equal('9 user input fields failed to validate.');
+              expect(response.body.message).to.equal('8 user input fields failed to validate.');
               done();
             });
         });// ends it
-        it('should return "400 status and 14 user input fields failed to validate."', (done) => {
+        it('should return "400 status and 13 user input fields failed to validate."', (done) => {
           const centerObject = {
             isFacilityExisting: 'false',
             facilityName: 'a',
@@ -967,14 +972,15 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              console.log('===========> 5', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
-              expect(response.body.message).to.equal('14 user input fields failed to validate.');
+              expect(response.body.message).to.equal('13 user input fields failed to validate.');
               done();
             });
         });// ends it
-        it('should return "400 status and 9 user input fields failed to validate."', (done) => {
+        it('should return "400 status and 8 user input fields failed to validate."', (done) => {
           const centerObject = {
             isFacilityExisting: 'true',
             facilityName: 'a',
@@ -1003,10 +1009,11 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              console.log('===========> 6', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
-              expect(response.body.message).to.equal('9 user input fields failed to validate.');
+              expect(response.body.message).to.equal('8 user input fields failed to validate.');
               done();
             });
         });// ends it
@@ -1039,6 +1046,7 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              console.log('===========> 7', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
@@ -1075,6 +1083,7 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              console.log('===========> 8', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
@@ -1111,6 +1120,7 @@ describe('Events Manager API endpoint testing', () => {
             .send(centerObject)
             .expect(400)
             .end((error, response) => {
+              console.log('===========> 9', response.body);
               expect(response.body).to.have.property('message');
               expect(response.body).to.have.property('Details');
               expect(response.status).to.equal(400);
@@ -1246,7 +1256,6 @@ describe('Events Manager API endpoint testing', () => {
             centerCategory: 'garden',
             capacity: 0,
             usageFee: 0,
-            createdBy: 'ode akugbe',
             description: ''
           };
           request(app)
@@ -1282,7 +1291,6 @@ describe('Events Manager API endpoint testing', () => {
             centerCategory: 'garden',
             capacity: 5000,
             usageFee: 50000,
-            createdBy: 'ode akugbe',
             description: ''
           };
           request(app)
@@ -1317,7 +1325,6 @@ describe('Events Manager API endpoint testing', () => {
             centerCategory: 'garden',
             capacity: 5000,
             usageFee: 50000,
-            createdBy: 'ode akugbe',
             description: ''
           };
           request(app)
@@ -1352,7 +1359,6 @@ describe('Events Manager API endpoint testing', () => {
             centerCategory: 'garden',
             capacity: 5000,
             usageFee: 50000,
-            createdBy: 'ode akugbe',
             description: ''
           };
           request(app)
@@ -1387,7 +1393,6 @@ describe('Events Manager API endpoint testing', () => {
             centerCategory: 'garden',
             capacity: 5000,
             usageFee: 50000,
-            createdBy: 'ode akugbe',
             description: ''
           };
           request(app)
@@ -1422,7 +1427,6 @@ describe('Events Manager API endpoint testing', () => {
             centerCategory: 'garden',
             capacity: 5000,
             usageFee: 50000,
-            createdBy: 'ode akugbe',
             description: ''
           };
           request(app)
@@ -1457,7 +1461,6 @@ describe('Events Manager API endpoint testing', () => {
             centerCategory: 'garden',
             capacity: 5000,
             usageFee: 50000,
-            createdBy: 'ode akugbe',
             description: ''
           };
           request(app)
