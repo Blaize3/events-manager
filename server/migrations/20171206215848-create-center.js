@@ -6,6 +6,16 @@ module.exports = {
       primaryKey: true,
       type: Sequelize.INTEGER
     },
+    facilityId: {
+      allowNull: false,
+      type: Sequelize.INTEGER,
+      onDelete: 'CASCADE',
+      reference: {
+        model: 'Facility',
+        key: 'id',
+        as: 'facilityId'
+      }
+    },
     centerName: {
       allowNull: false,
       unique: true,

@@ -2,17 +2,14 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Facility = sequelize.define('Facility', {
-    centerId: {
+    facilityName: {
       allowNull: false,
-      type: DataTypes.INTEGER,
+      unique: true,
+      type: DataTypes.STRING,
       validate: {
-        isNumeric: {
+        notEmpty: {
           args: true,
-          msg: 'Center Id field must be number.'
-        },
-        isInt: {
-          args: true,
-          msg: 'Center Id field must be integer.'
+          msg: 'Facility name field cannot be empty.'
         }
       }
     },
@@ -127,12 +124,16 @@ module.exports = (sequelize, DataTypes) => {
           msg: 'Number of toilets field must be integer.'
         }
       }
+    },
+    descriptionFacility: {
+      allowNull: true,
+      type: DataTypes.TEXT
     }
   });
 
   Facility.associate = (models) => {
-    Facility.belongsTo(models.Center, {
-      foreignKey: 'centerId'
+    Facility.hasMany(models.Center, {
+      foreignKey: 'facilityId'
       // as: 'centerId'
     });
   };

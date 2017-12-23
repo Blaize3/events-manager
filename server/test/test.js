@@ -560,9 +560,10 @@ describe('Events Manager API endpoint testing', () => {
               expect(response.status).to.equal(401);
               expect(response.body.message).to.equal('User 5 is not authorized to create privileged Users');
               done();
+              if (error) done(error);
             });
         });// ends it
-        it('should return "404 status and User accont not found." sending ode-igh@yahoo.com as the user\'s email', (done) => {
+        it('should return "404 status and User account not found." sending ode-igh@yahoo.com as the user\'s email', (done) => {
           request(app)
             .put('/api/v1/users/admin')
             .set('x-access-token', adminToken)
@@ -571,7 +572,7 @@ describe('Events Manager API endpoint testing', () => {
             .end((error, response) => {
               expect(response.body).to.have.property('message');
               expect(response.status).to.equal(404);
-              expect(response.body.message).to.equal('User accont not found.');
+              expect(response.body.message).to.equal('User account not found.');
               done();
             });
         });// ends it
@@ -625,5 +626,1129 @@ describe('Events Manager API endpoint testing', () => {
         });// ends it
       });// Invalid Case
     });// PUT /api/v1/users/admin
+    describe('Get all Centers API endpoint test', () => {
+      describe('GET /api/v1/centers', () => {
+        describe('Invalid Cases', () => {
+          it('should return "404 status and No Center was found!"', (done) => {
+            request(app)
+              .get('/api/v1/centers')
+              .set('x-access-token', userToken1)
+              .expect(404)
+              .end((error, response) => {
+                expect(response.body).to.have.property('message');
+                expect(response.status).to.equal(404);
+                expect(response.body.message).to.equal('No Center was found!');
+                done();
+              });
+          });// ends it
+        });// Invalid Cases
+      });// GET /api/v1/centers
+    });// Get all Centers API endpoint test
+    describe('Get a Center API endpoint test', () => {
+      describe('GET /api/v1/centers/:centerId', () => {
+        describe('Invalid Cases', () => {
+          it('should return "404 status and No Center was found!"', (done) => {
+            request(app)
+              .get('/api/v1/centers/5')
+              .set('x-access-token', userToken1)
+              .expect(404)
+              .end((error, response) => {
+                expect(response.body).to.have.property('message');
+                expect(response.status).to.equal(404);
+                expect(response.body.message).to.equal('No Center was found!');
+                done();
+              });
+          });// ends it
+          it('should return "400 status and 1 user input field failed to validate."  sending centerId 0', (done) => {
+            request(app)
+              .get('/api/v1/centers/0')
+              .set('x-access-token', adminToken)
+              .expect(400)
+              .end((error, response) => {
+                expect(response.body).to.have.property('message');
+                expect(response.body).to.have.property('Details');
+                expect(response.body.Details).to.have.property('Center Id');
+                expect(response.status).to.equal(400);
+                expect(response.body.message).to.equal('1 user input field failed to validate.');
+                expect(response.body.Details['Center Id']).to.equal('Center\'s id field cannot be 0.');
+                done();
+              });
+          });// ends it
+          it('should return "400 status and 1 user input field failed to validate."  sending null as params', (done) => {
+            request(app)
+              .get(`/api/v1/centers/${null}`)
+              .set('x-access-token', adminToken)
+              .expect(400)
+              .end((error, response) => {
+                expect(response.body).to.have.property('message');
+                expect(response.body).to.have.property('Details');
+                expect(response.body.Details).to.have.property('Center Id');
+                expect(response.status).to.equal(400);
+                expect(response.body.message).to.equal('1 user input field failed to validate.');
+                expect(response.body.Details['Center Id']).to.equal('Center\'s id field can take numbers.');
+                done();
+              });
+          });// ends it
+        });// Invalid Cases
+      });// GET /api/v1/centers/:centerId
+    });// Get a Center API endpoint test
   });// Create Admin User API endpoint test
+  describe('Create Center API enpoint test', () => {
+    describe('POST /api/v1/centers', () => {
+      describe('Valid Cases', () => {
+        it('should return "201 status and Center has been created."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 1,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            createdBy: 'ode akugbe',
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(201)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.body).to.have.property('Other Information');
+              expect(response.body.Details).to.have.property('Center Id');
+              expect(response.body.Details).to.have.property('Facility Id');
+              expect(response.body.Details).to.have.property('Center name');
+              expect(response.body.Details).to.have.property('Center address');
+              expect(response.body.Details).to.have.property('Center location');
+              expect(response.body.Details).to.have.property('Center category');
+              expect(response.body.Details).to.have.property('Usage fee');
+              expect(response.body.Details).to.have.property('Created by');
+              expect(response.body.Details).to.have.property('Description');
+              expect(response.status).to.equal(201);
+              expect(response.body.message).to.equal('Center has been created.');
+              expect(response.body['Other Information']).to.equal('Facility 1 was also created.');
+              done();
+            });
+        });// ends it
+        it('should return "201 status and Center has been created."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: 'This facility specification is associated with large center',
+            facilityId: 1,
+            centerName: 'Millenium park',
+            address: '123 central business district, abuja',
+            location: 'fct, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            createdBy: 'ode akugbe',
+            description: 'lorem ipsum dolor, sit amet consectetur...'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(201)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.body.Details).to.have.property('Center Id');
+              expect(response.body.Details).to.have.property('Facility Id');
+              expect(response.body.Details).to.have.property('Center name');
+              expect(response.body.Details).to.have.property('Center address');
+              expect(response.body.Details).to.have.property('Center location');
+              expect(response.body.Details).to.have.property('Center category');
+              expect(response.body.Details).to.have.property('Usage fee');
+              expect(response.body.Details).to.have.property('Created by');
+              expect(response.body.Details).to.have.property('Description');
+              expect(response.status).to.equal(201);
+              expect(response.body.message).to.equal('Center has been created.');
+              done();
+            });
+        });// ends it
+      });// Valid Cases
+      describe('Invalid Cases', () => {
+        it('should return "400 status and 1 user input field failed to validate." supplying isFacilityExisting empty field.', (done) => {
+          const centerObject = {
+            isFacilityExisting: '',
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.body.Details).to.have.property('is Facility existing?');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('1 user input field failed to validate.');
+              expect(response.body.Details['is Facility existing?']).to.equal('Is Facility existing field cannot be empty.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 1 user input field failed to validate." supplying invalid isFacilityExisting field.', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'truesss',
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.body.Details).to.have.property('is Facility existing?');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('1 user input field failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 11 user input fields failed to validate." setting isFacilityExisting field to false.', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('11 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 7 user input fields failed to validate." setting isFacilityExisting field to true.', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('7 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 13 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 2,
+            hasProjectors: 2,
+            numOfProjectors: '5dd',
+            hasChairs: 2,
+            numOfChairs: 'jj',
+            hasTables: 2,
+            numOfTables: 'kk',
+            hasToilets: 3,
+            numOfToilets: 'll',
+            descriptionFacility: 2,
+            facilityId: 'hg',
+            centerName: 4,
+            address: 4,
+            location: 7,
+            centerCategory: 98,
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: 4,
+            description: 8
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('13 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 8 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 2,
+            hasProjectors: 2,
+            numOfProjectors: '5dd',
+            hasChairs: 2,
+            numOfChairs: 'jj',
+            hasTables: 2,
+            numOfTables: 'kk',
+            hasToilets: 3,
+            numOfToilets: 'll',
+            descriptionFacility: 2,
+            facilityId: 'hg',
+            centerName: 4,
+            address: 4,
+            location: 7,
+            centerCategory: 98,
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: 4,
+            description: 8
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('8 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 13 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: '@;',
+            hasProjectors: '@;',
+            numOfProjectors: '5dd',
+            hasChairs: '@;',
+            numOfChairs: 'jj',
+            hasTables: '@;',
+            numOfTables: 'kk',
+            hasToilets: '@;',
+            numOfToilets: 'll',
+            descriptionFacility: '@;',
+            facilityId: 'hg',
+            centerName: '@;',
+            address: '@;',
+            location: '@;',
+            centerCategory: '@;',
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: '@;',
+            description: '@;'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('13 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 8 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: '@;',
+            hasProjectors: '@;',
+            numOfProjectors: '5dd',
+            hasChairs: '@;',
+            numOfChairs: 'jj',
+            hasTables: '@;',
+            numOfTables: 'kk',
+            hasToilets: '@;',
+            numOfToilets: 'll',
+            descriptionFacility: '@;',
+            facilityId: 'hg',
+            centerName: '@;',
+            address: '@;',
+            location: '@;',
+            centerCategory: '@;',
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: '@;',
+            description: '@;'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('8 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 13 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'a',
+            hasProjectors: 'a',
+            numOfProjectors: '5.66.88',
+            hasChairs: 'a',
+            numOfChairs: '5.66.88',
+            hasTables: 'a',
+            numOfTables: '5.66.88',
+            hasToilets: 'a',
+            numOfToilets: '5.66.88',
+            descriptionFacility: 'a',
+            facilityId: 'hg',
+            centerName: 'a',
+            address: 'a',
+            location: 'a',
+            centerCategory: 'a',
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: 'a',
+            description: 'a'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('13 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 8 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'a',
+            hasProjectors: 'a',
+            numOfProjectors: '5.66.88',
+            hasChairs: 'a',
+            numOfChairs: '5.66.88',
+            hasTables: 'a',
+            numOfTables: '5.66.88',
+            hasToilets: 'a',
+            numOfToilets: '5.66.88',
+            descriptionFacility: 'a',
+            facilityId: 'hg',
+            centerName: 'a',
+            address: 'a',
+            location: 'a',
+            centerCategory: 'a',
+            capacity: 'kjkhj',
+            usageFee: 'hghhh',
+            createdBy: 'a',
+            description: 'a'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('8 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 6 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: 0,
+            hasChairs: 'true',
+            numOfChairs: 0,
+            hasTables: 'true',
+            numOfTables: 0,
+            hasToilets: 'true',
+            numOfToilets: 0,
+            descriptionFacility: '',
+            facilityId: 0,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 0,
+            usageFee: 0,
+            createdBy: 'ode akugbe',
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('6 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 3 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: 0,
+            hasChairs: 'true',
+            numOfChairs: 0,
+            hasTables: 'true',
+            numOfTables: 0,
+            hasToilets: 'true',
+            numOfToilets: 0,
+            descriptionFacility: 'This facility specification is associated with large center',
+            facilityId: 0,
+            centerName: 'Millenium park',
+            address: '123 central business district, abuja',
+            location: 'fct, nigeria.',
+            centerCategory: 'garden',
+            capacity: 0,
+            usageFee: 0,
+            createdBy: 'ode akugbe',
+            description: 'lorem ipsum dolor, sit amet consectetur...'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('3 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 6 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: '77.87.99',
+            hasChairs: 'true',
+            numOfChairs: '77.87.99',
+            hasTables: 'true',
+            numOfTables: '77.87.99',
+            hasToilets: 'true',
+            numOfToilets: '77.87.99',
+            descriptionFacility: '',
+            facilityId: '77.87.99',
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 0,
+            usageFee: 0,
+            createdBy: 'ode akugbe',
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('6 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 3 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: '77.87.99',
+            hasChairs: 'true',
+            numOfChairs: '77.87.99',
+            hasTables: 'true',
+            numOfTables: '77.87.99',
+            hasToilets: 'true',
+            numOfToilets: '77.87.99',
+            descriptionFacility: 'This facility specification is associated with large center',
+            facilityId: '77.87.99',
+            centerName: 'Millenium park',
+            address: '123 central business district, abuja',
+            location: 'fct, nigeria.',
+            centerCategory: 'garden',
+            capacity: 0,
+            usageFee: 0,
+            createdBy: 'ode akugbe',
+            description: 'lorem ipsum dolor, sit amet consectetur...'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('3 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 6 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: '',
+            hasChairs: 'true',
+            numOfChairs: '',
+            hasTables: 'true',
+            numOfTables: '',
+            hasToilets: 'true',
+            numOfToilets: '',
+            descriptionFacility: '',
+            facilityId: '',
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 0,
+            usageFee: 0,
+            createdBy: 'ode akugbe',
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('6 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 3 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: '',
+            hasChairs: 'true',
+            numOfChairs: '',
+            hasTables: 'true',
+            numOfTables: '',
+            hasToilets: 'true',
+            numOfToilets: '',
+            descriptionFacility: 'This facility specification is associated with large center',
+            facilityId: '',
+            centerName: 'Millenium park',
+            address: '123 central business district, abuja',
+            location: 'fct, nigeria.',
+            centerCategory: 'garden',
+            capacity: 0,
+            usageFee: 0,
+            createdBy: 'ode akugbe',
+            description: 'lorem ipsum dolor, sit amet consectetur...'
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('3 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 6 user input fields failed to validate."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'large hall',
+            hasProjectors: 'false',
+            numOfProjectors: 100,
+            hasChairs: 'false',
+            numOfChairs: 100,
+            hasTables: 'false',
+            numOfTables: 100,
+            hasToilets: 'false',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 0,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 0,
+            usageFee: 0,
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('6 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "403 status and facility name already exist"', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 1,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(403)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Facility and Center Creation Error');
+              expect(response.status).to.equal(403);
+              expect(response.body['Facility and Center Creation Error']).to.equal('facility name already exist');
+              done();
+            });
+        });// ends it
+        it('should return "403 status and center name already exist"', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'small hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 1,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(403)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Facility and Center Creation Error');
+              expect(response.status).to.equal(403);
+              expect(response.body['Facility and Center Creation Error']).to.equal('center name already exist');
+              done();
+            });
+        });// ends it
+        it('should return "401 status and User is not authorised to create center."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'false',
+            facilityName: 'small hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 1,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', userToken3)
+            .send(centerObject)
+            .expect(401)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Center Creation Failed');
+              expect(response.status).to.equal(401);
+              expect(response.body['Center Creation Failed']).to.equal('User is not authorised to create center.');
+              done();
+            });
+        });// ends it
+        it('should return "404 status and Facility 4 was not found."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'large hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 4,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(404)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.status).to.equal(404);
+              expect(response.body.message).to.equal('Facility 4 was not found.');
+              done();
+            });
+        });// ends it
+        it('should return "403 status and center name already exist"', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'small hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 1,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', adminToken)
+            .send(centerObject)
+            .expect(403)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Center Creation Error');
+              expect(response.status).to.equal(403);
+              expect(response.body['Center Creation Error']).to.equal('center name already exist');
+              done();
+            });
+        });// ends it
+        it('should return "401 status and User is not authorised to create center."', (done) => {
+          const centerObject = {
+            isFacilityExisting: 'true',
+            facilityName: 'small hall',
+            hasProjectors: 'true',
+            numOfProjectors: 5,
+            hasChairs: 'true',
+            numOfChairs: 5000,
+            hasTables: 'true',
+            numOfTables: 1250,
+            hasToilets: 'true',
+            numOfToilets: 100,
+            descriptionFacility: '',
+            facilityId: 1,
+            centerName: 'La posh garden',
+            address: '122 VGC lagos island,',
+            location: 'lagos state, nigeria.',
+            centerCategory: 'garden',
+            capacity: 5000,
+            usageFee: 50000,
+            description: ''
+          };
+          request(app)
+            .post('/api/v1/centers')
+            .set('x-access-token', userToken2)
+            .send(centerObject)
+            .expect(401)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Center Creation Failed');
+              expect(response.status).to.equal(401);
+              expect(response.body['Center Creation Failed']).to.equal('User is not authorised to create center.');
+              done();
+            });
+        });// ends it
+      });// Invalid Cases
+    });// POST /api/v1/centers
+  });// Create Center API enpoint test
+  describe('Get all Centers API endpoint test', () => {
+    describe('GET /api/v1/centers', () => {
+      describe('Valid Cases', () => {
+        it('should return "200 status and 2 centers center were found."', (done) => {
+          request(app)
+            .get('/api/v1/centers')
+            .set('x-access-token', userToken1)
+            .expect(200)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(200);
+              expect(response.body.message).to.equal('2 centers center were found.');
+              expect(response.body.Details).to.be.a('array');
+              done();
+            });
+        });// ends it
+      });// Valid Cases
+    });// GET /api/v1/centers
+  });// Get all Centers API endpoint test
+  describe('Get a Center API endpoint test', () => {
+    describe('GET /api/v1/centers/:centerId', () => {
+      describe('Valid Cases', () => {
+        it('should return "200 status and Center 1 was found."', (done) => {
+          request(app)
+            .get('/api/v1/centers/1')
+            .set('x-access-token', userToken1)
+            .expect(200)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(200);
+              expect(response.body.message).to.equal('Center 1 was found.');
+              expect(response.body.Details).to.be.a('object');
+              done();
+            });
+        });// ends it
+      });// Valid Cases
+    });// GET /api/v1/centers/:centerId
+  });// Get a Center API endpoint test
+  describe('Modify a Center Details API endpoint test', () => {
+    describe('PUT /api/v1/centers/:centerId', () => {
+      describe('Valid cases', () => {
+        it('should return "200 status and Center 1 details was successfully updated."', (done) => {
+          const modifyCenter = {
+            facilityId: 1,
+            centerName: 'Modified Center',
+            address: '32 Martin street Ijeshatedo Surulere',
+            location: 'Lagos Nigeria',
+            centerCategory: 'Conference Hall',
+            capacity: 200,
+            usageFee: 15000,
+            description: 'This Center information has been modified.'
+          };
+          request(app)
+            .put('/api/v1/centers/1')
+            .set('x-access-token', adminToken)
+            .send(modifyCenter)
+            .expect(200)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Center Details Modification was Successful');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(200);
+              expect(response.body['Center Details Modification was Successful']).to.equal('Center 1 details was successfully updated.');
+              expect(response.body.Details).to.be.a('object');
+              done();
+            });
+        });// ends it
+      });// Valid cases
+      describe('Invalid Cases', () => {
+        it('should return "403 status and No changes were made to center details."', (done) => {
+          const modifyCenter = {};
+          request(app)
+            .put('/api/v1/centers/1')
+            .set('x-access-token', adminToken)
+            .send(modifyCenter)
+            .expect(403)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.status).to.equal(403);
+              expect(response.body.message).to.equal('No changes were made to center details.');
+              done();
+            });
+        });// ends it
+        it('should return "403 status and No changes were made to center details."', (done) => {
+          const modifyCenter = {
+            centerName: undefined,
+            address: undefined,
+            location: undefined,
+            centerCategory: undefined,
+            capacity: undefined
+          };
+          request(app)
+            .put('/api/v1/centers/1')
+            .set('x-access-token', adminToken)
+            .send(modifyCenter)
+            .expect(403)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.status).to.equal(403);
+              expect(response.body.message).to.equal('No changes were made to center details.');
+              done();
+            });
+        });// ends it
+        it('should return "404 status and Center 26 was not found."', (done) => {
+          const modifyCenter = {};
+          request(app)
+            .put('/api/v1/centers/26')
+            .set('x-access-token', adminToken)
+            .send(modifyCenter)
+            .expect(404)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.status).to.equal(404);
+              expect(response.body.message).to.equal('Center 26 was not found.');
+              done();
+            });
+        });// ends it
+        it('should return "401 status and User is not authorised to modify center details."', (done) => {
+          const modifyCenter = {
+            facilityId: 1,
+            centerName: 'Modified Center',
+            address: '32 Martin street Ijeshatedo Surulere',
+            location: 'Lagos Nigeria',
+            centerCategory: 'Conference Hall',
+            capacity: 200,
+            usageFee: 15000,
+            description: 'This Center information has been modified.'
+          };
+          request(app)
+            .put('/api/v1/centers/1')
+            .set('x-access-token', userToken1)
+            .send(modifyCenter)
+            .expect(401)
+            .end((error, response) => {
+              expect(response.body).to.have.property('Center Details Modification Failed');
+              expect(response.status).to.equal(401);
+              expect(response.body['Center Details Modification Failed']).to.equal('User is not authorised to modify center details.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 8 user input fields failed to validate."', (done) => {
+          const modifyCenter = {
+            facilityId: 'ss',
+            centerName: 2,
+            address: 5,
+            location: 9,
+            centerCategory: 8,
+            capacity: 'ss',
+            usageFee: 'ss',
+            description: 6
+          };
+          request(app)
+            .put('/api/v1/centers/1')
+            .set('x-access-token', userToken1)
+            .send(modifyCenter)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('8 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 9 user input fields failed to validate."', (done) => {
+          const modifyCenter = {
+            facilityId: 0,
+            centerName: 'ss',
+            address: 'ss',
+            location: 'ss',
+            centerCategory: 'ss',
+            capacity: 0,
+            usageFee: 0,
+            description: 'ss'
+          };
+          request(app)
+            .put('/api/v1/centers/ss')
+            .set('x-access-token', userToken1)
+            .send(modifyCenter)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('9 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+        it('should return "400 status and 9 user input fields failed to validate."', (done) => {
+          const modifyCenter = {
+            facilityId: '@#:',
+            centerName: '@#:',
+            address: '@#:',
+            location: '@#:',
+            centerCategory: '@#:',
+            capacity: '@#:',
+            usageFee: '@#:',
+            description: '@#:'
+          };
+          request(app)
+            .put('/api/v1/centers/0')
+            .set('x-access-token', userToken1)
+            .send(modifyCenter)
+            .expect(400)
+            .end((error, response) => {
+              expect(response.body).to.have.property('message');
+              expect(response.body).to.have.property('Details');
+              expect(response.status).to.equal(400);
+              expect(response.body.message).to.equal('9 user input fields failed to validate.');
+              done();
+            });
+        });// ends it
+      }); // Invalid Cases
+    });// PUT /api/v1/centers/:centerId
+  });// Modify a Center Details API endpoint test
 });// Main describe

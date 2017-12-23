@@ -20,25 +20,25 @@ app.use(bodyParser.urlencoded({ extended: false }));
 router(app);
 
 // default route handler
-app.get('/*', (request, response) => {
+app.get('*', (request, response) => {
   response.status(404).send({
     message: 'Page not found!'
   });
 });
 
-app.post('/*', (request, response) => {
+app.post('*', (request, response) => {
   response.status(404).send({
     message: 'Page not found!'
   });
 });
 
-app.put('/*', (request, response) => {
+app.put('*', (request, response) => {
   response.status(404).send({
     message: 'Page not found!'
   });
 });
 
-app.delete('/*', (request, response) => {
+app.delete('*', (request, response) => {
   response.status(404).send({
     message: 'Page not found!'
   });
