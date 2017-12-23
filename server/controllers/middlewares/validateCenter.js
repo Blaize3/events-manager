@@ -535,6 +535,198 @@ class DoValidation {
 
     return validationStatus;
   }// ends validateAddCenter
+  /**
+ *
+ *
+ * @static
+ * @param {any} centerId
+ * @returns {DoValidation} The identifier for ...
+ * @memberof DoValidation
+ */
+  static validateCenterParamsId(centerId) {
+    let errorCount = 0;
+    const errorObject = {};
+    let validationHasFailed = false;
+
+    // /1. Validate Center id field
+    if (!(RegularExpression.validateNumbers(centerId))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center Id'] = 'Center\'s id field can take numbers.';
+    } else if (parseInt(centerId, 10) === 0) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center Id'] = 'Center\'s id field cannot be 0.';
+    }
+
+    const validationStatus = {
+      validationHasFailed,
+      errorCount,
+      errorObject
+    };
+
+    return validationStatus;
+  }// ends validateCenterParamsId
+  /**
+ *
+ *
+ * @static
+ * @param {any} object
+ * @returns {DoValidation} The identifier for ...
+ * @memberof DoValidation
+ */
+  static validateCenterUpdateObject(object) {
+    let errorCount = 0;
+    const errorObject = {};
+    let validationHasFailed = false;
+
+    // /1. Validate Center id field
+    if (!(RegularExpression.validateNumbers(object.centerId))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center Id'] = 'Center\'s id field can take numbers.';
+    } else if (parseInt(object.centerId, 10) === 0) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center Id'] = 'Center\'s id field cannot be 0.';
+    }
+
+    // /2. Validate Facility id field
+    if ((object.facilityId === null) || (object.facilityId === undefined) || (object.facilityId === '')) {
+      object.facilityId = '';
+    } else if (!(RegularExpression.validateNumbers(object.facilityId))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Facility Id'] = 'Facility\'s id field can take numbers.';
+    } else if (parseInt(object.facilityId, 10) === 0) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Facility Id'] = 'Facility\'s id field cannot be 0.';
+    }
+
+    // /3. validate Center name field
+    if ((object.centerName === null) || (object.centerName === undefined) || (object.centerName === '')) {
+      object.centerName = '';
+    } else if (typeof (object.centerName) !== 'string') {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center name'] = 'Center name field must be of type string.';
+    } else if (!(RegularExpression
+      .regExpCharactersAndSpace(object.centerName.toLowerCase().trim()))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center name'] = 'Center name field can take alphabets and white space.';
+    } else if (object.centerName.length <= 2) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center name'] = 'Center name field length cannot be less than 3 characters.';
+    }
+
+    // /4. validate Center address field
+    if ((object.address === null) || (object.address === undefined) || (object.address === '')) {
+      object.address = '';
+    } else if (typeof (object.address) !== 'string') {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center address'] = 'Center address field must be of type string.';
+    } else if (!(RegularExpression
+      .regExpCharNumPuncAndSpace(object.address.toLowerCase().trim()))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center address'] = 'Center address field can take alphabets and white space.';
+    } else if (object.address.length <= 2) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center address'] = 'Center address field length cannot be less than 3 characters.';
+    }
+
+    // /5. validate Center location field
+    if ((object.location === null) || (object.location === undefined) || (object.location === '')) {
+      object.location = '';
+    } else if (typeof (object.location) !== 'string') {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center location'] = 'Center location field must be of type string.';
+    } else if (!(RegularExpression
+      .regExpCharNumPuncAndSpace(object.location.toLowerCase().trim()))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center location'] = 'Center location field can take alphabets and white space.';
+    } else if (object.location.length <= 2) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center location'] = 'Center location field length cannot be less than 3 characters.';
+    }
+
+    // /6. validate Center category field
+    if ((object.centerCategory === null) || (object.centerCategory === undefined) || (object.centerCategory === '')) {
+      object.centerCategory = '';
+    } else if (typeof (object.centerCategory) !== 'string') {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center category'] = 'Center category field must be of type string.';
+    } else if (!(RegularExpression
+      .regExpCharAndNumAndSpace(object.centerCategory.toLowerCase().trim()))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center category'] = 'Center category field can take alphabets, numbers and white space.';
+    } else if (object.centerCategory.length <= 2) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center category'] = 'Center category field length cannot be less than 3 characters.';
+    }
+
+    // /7. validate Center capacity field
+    if ((object.capacity === null) || (object.capacity === undefined) || (object.capacity === '')) {
+      object.capacity = '';
+    } else if (!(RegularExpression.validateNumbers(object.capacity))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center capacity'] = 'Center capacity field can take numbers.';
+    } else if (parseInt(object.capacity, 10) === 0) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center capacity'] = 'Center capacity field cannot be 0.';
+    }
+
+    // /8. validate Center usage fee field
+    if ((object.usageFee === null) || (object.usageFee === undefined) || (object.usageFee === '')) {
+      object.usageFee = '';
+    } else if (!(RegularExpression.validateNumbers(object.usageFee))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center usage fee'] = 'Center usage fee field can take numbers.';
+    } else if (parseInt(object.usageFee, 10) === 0) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center usage fee'] = 'Center usage fee field cannot be 0.00';
+    }
+
+    // /9. valid Center description field
+    if ((object.description === null) || (object.description === undefined) || (object.description === '')) {
+      object.description = '';
+    } else if (typeof (object.description) !== 'string') {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center\'s description'] = 'Center description field must be of type string.';
+    } else if (!(RegularExpression.regExpCharNumPuncAndSpace(object.description))) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center\'s description'] = 'Center description field can take alphabets, numbers, period, comma and white space.';
+    } else if (object.description.length <= 9) {
+      validationHasFailed = true;
+      errorCount += 1;
+      errorObject['Center\'s description'] = 'Center description field length cannot be less 10 characters.';
+    }
+
+    const validationStatus = {
+      validationHasFailed,
+      errorCount,
+      errorObject
+    };
+
+    return validationStatus;
+  }// ends validateCenterUpdateObject
 }
 
 export default DoValidation;
